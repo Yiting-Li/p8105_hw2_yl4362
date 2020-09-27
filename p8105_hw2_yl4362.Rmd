@@ -53,7 +53,7 @@ precipitation_combined_df =
   left_join(precipitation_combined_df, month_df, by = "month")
 ```
 
-**datasets description**
+**Datasets description**
 
 In the `mr_trashwheel_df` dataset, there are `r nrow(mr_trashwheel_df)` observations and `r ncol(mr_trashwheel_df)` variables. This dataset describes the dumpsters number, the trush types they collected, their corresponding volume collected, and the time they were recorded.
 
@@ -62,4 +62,16 @@ In the `precipitation_combined_df` dataset, there are `r nrow(precipitation_comb
 The total precipitation in 2018 is `r sum(pull(precipitation_2018_df, total))`.
 
 The median number of sports balls in a dumpster in 2017 is `r median(pull(mr_trashwheel_df, sports_balls), year = 2017)`.
+
+## Problem 2
+
+**Read and clean the NYC transit data**
+
+```{r}
+nyc_transit_df = 
+  read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
+  janitor::clean_names() %>%
+  select(line:entry, vending, ada) %>%
+  mutate(entry = recode(entry, YES = TRUE, NO = FALSE))
+```
 
