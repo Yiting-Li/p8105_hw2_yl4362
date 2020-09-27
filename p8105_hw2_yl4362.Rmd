@@ -53,3 +53,12 @@ precipitation_combined_df =
   left_join(precipitation_combined_df, month_df, by = "month")
 ```
 
+**datasets description**
+
+In the `mr_trashwheel_df` dataset, there are `r nrow(mr_trashwheel_df)` observations and `r ncol(mr_trashwheel_df)` variables. This dataset describes the dumpsters number, the trush types they collected, their corresponding volume collected, and the time they were recorded.
+
+In the `precipitation_combined_df` dataset, there are `r nrow(precipitation_combined_df)` observations and `r ncol(precipitation_combined_df)` variables. This dataset describes the precipitation in different months over the year of 2017 to 2018.
+
+The total precipitation in 2018 is `r sum(pull(precipitation_2018_df, total))`.
+The median number of sports balls in a dumpster in 2017 is `r median(pull(mr_trashwheel_df, sports_balls))`
+
