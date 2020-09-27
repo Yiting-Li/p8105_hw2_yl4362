@@ -3,7 +3,7 @@ title: "p8105_hw2_yl4362"
 output: github_document
 ---
 
-```{r setup}
+```{r setup, message = FALSE}
 library(tidyverse)
 library(readxl)
 ```
@@ -67,11 +67,20 @@ The median number of sports balls in a dumpster in 2017 is `r median(pull(mr_tra
 
 **Read and clean the NYC transit data**
 
-```{r}
+```{r,message = FALSE}
 nyc_transit_df = 
   read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
   janitor::clean_names() %>%
   select(line:entry, vending, ada) %>%
   mutate(entry = recode(entry, YES = TRUE, NO = FALSE))
 ```
+
+**Dataset description**
+
+The dataset `nyc_transit_df` contains the NYC subway stations' name, latitude, longitude, line, routes served there, entrance and vending, and ADA compliance. 
+
+I cleaned the variable names into a uniform style, selected the essential variables about stations and routes, and converted the variable `entry` from character into logical.
+
+I think the current dataset is still not tidy because the variable `vending` is stored as character although its values are logical: `YES`, `NO`.
+
 
