@@ -83,18 +83,22 @@ I cleaned the variable names into a uniform style, selected the essential variab
 
 I think the current dataset is still not tidy because the variable `vending` is stored as character although its values are logical: `YES`, `NO`.
 
-**Answers for statistical questions**
+**Reformat data and answers for statistical questions**
 
 ```{r}
 distinct_station = distinct(nyc_transit_df, line, station_name, .keep_all = TRUE)
+
+vending_station = filter(nyc_transit_df, vending == 'YES')
+
+vending_distinct = distinct(vending_station, line, station_name, .keep_all = TRUE)
 ```
 1. There are `r nrow(distinct_station)` distinct stations.
 
 2. `r nrow(filter(distinct_station, ada == TRUE))` stations are ADA compliant.
 
-3. The proportion of entrances / exists without vending allow entrance is `r nrow(filter(distinct_station, vending == 'NO'))/nrow(distinct_station)`.
+3. The proportion of station entrances / exists without vending allow entrance is `r (nrow(distinct_station) - nrow(vending_distinct))/nrow(distinct_station)`.
 
-**Reform the data to distinct route number and name**
+**A train**
 
 ```{r}
 a_station = 
