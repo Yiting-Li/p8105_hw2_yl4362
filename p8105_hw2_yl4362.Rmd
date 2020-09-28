@@ -85,11 +85,14 @@ I think the current dataset is still not tidy because the variable `vending` is 
 
 **Answers for statistical questions**
 
-1. There are `r nrow(distinct(nyc_transit_df, line, station_name, .keep_all = TRUE))` distinct stations.
+```{r}
+distinct_station = distinct(nyc_transit_df, line, station_name, .keep_all = TRUE)
+```
+1. There are `r nrow(distinct_station)` distinct stations.
 
-2. `r nrow(filter(nyc_transit_df, ada == TRUE))` stations are ADA compliant.
+2. `r nrow(filter(distinct_station, ada == TRUE))` stations are ADA compliant.
 
-3. The proportion of entrances / exists without vending allow entrance is `r nrow(filter(nyc_transit_df, vending == 'NO'))/nrow(nyc_transit_df)`.
+3. The proportion of entrances / exists without vending allow entrance is `r nrow(filter(distinct_station, vending == 'NO'))/nrow(distinct_station)`.
 
 **Reform the data to distinct route number and name**
 
@@ -105,3 +108,50 @@ a_station =
 There are `r nrow(a_station)` distinct stations serve the A train. 
 
 Of the stations that serve the A train, there are `r nrow(filter(a_station, ada == TRUE))` stations are ADA compliant.
+
+## Problem 3
+
+**Read, clean and merge the FiveThirtyEight data**
+```{r, message = FALSE}
+pols_month_df = 
+  read_csv("./fivethirtyeight_datasets/pols-month.csv") %>%
+  separate(mon, sep = "-", into = c("year", "month", "day")) %>%
+  mutate(year = as.integer(year), 
+         month = as.integer(month), 
+         day = as.integer(day),
+         month = month.abb[month],
+         president = prez_gop + prez_dem) %>%
+  select(-prez_gop, -prez_dem, -day)
+
+snp_df =
+  read_csv("./fivethirtyeight_datasets/snp.csv") %>%
+  separate(date, sep = "/", into = c("month", "day", "year")) %>%
+  mutate(year = as.integer(year), 
+         month = as.integer(month), 
+         day = as.integer(day),
+         month = month.abb[month]) %>%
+  select(-day) %>%
+  arrange(year, month) %>%
+  relocate(year, month)
+
+unemployment_df = 
+  read_csv("./fivethirtyeight_datasets/unemployment.csv") %>%
+  pivot_longer(
+    Jan:Dec,
+    names_to = "month",
+    values_to = "unemployment_percent"
+  ) %>%
+  janitor::clean_names() %>%
+  mutate(year = as.integer(year))
+
+pols_snp = 
+  full_join(
+    pols_month_df, snp_df, by = c("year","month")
+  )
+
+unemployment_pols_snp = 
+  full_join(
+    unemployment_df, pols_snp, by = c("year","month")
+  )
+```
+
