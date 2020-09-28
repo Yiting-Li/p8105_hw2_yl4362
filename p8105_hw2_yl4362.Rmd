@@ -97,11 +97,8 @@ distinct_station = distinct(nyc_transit_df, line, station_name, .keep_all = TRUE
 **Reform the data to distinct route number and name**
 
 ```{r}
-nyc_transit_df2 = 
-  distinct(nyc_transit_df, line, station_name, .keep_all = TRUE)
-
 a_station = 
-  filter(nyc_transit_df2, route1 == 'A'|route2 == 'A'|route3 == 'A'|route4 == 'A'|route5 == 'A'
+  filter(distinct_station, route1 == 'A'|route2 == 'A'|route3 == 'A'|route4 == 'A'|route5 == 'A'
          |route6 == 'A'|route7 == 'A'|route8 == 'A'|route9 == 'A'|route10 == 'A'|route11 == 'A')
 ```
 
