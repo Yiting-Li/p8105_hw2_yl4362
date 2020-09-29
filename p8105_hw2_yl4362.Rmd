@@ -88,22 +88,20 @@ I think the current dataset is still not tidy because the variable `vending` is 
 ```{r}
 distinct_station = distinct(nyc_transit_df, line, station_name, .keep_all = TRUE)
 
-vending_station = filter(nyc_transit_df, vending == 'YES')
-
-vending_distinct = distinct(vending_station, line, station_name, .keep_all = TRUE)
+vending_false = filter(nyc_transit_df, vending == 'NO')
 ```
 1. There are `r nrow(distinct_station)` distinct stations.
 
 2. `r nrow(filter(distinct_station, ada == TRUE))` stations are ADA compliant.
 
-3. The proportion of station entrances / exists without vending allow entrance is `r (nrow(distinct_station) - nrow(vending_distinct))/nrow(distinct_station)`.
+3. The proportion of station entrances without vending allow entrance is `r nrow(filter(vending_false, entry == TRUE))/nrow(vending_false)`. 
+The proportion of station exits without vending allow entrance is`r nrow(filter(vending_false, entry == FALSE))/nrow(vending_false)`
 
 **A train**
 
 ```{r}
 a_station = 
-  filter(distinct_station, route1 == 'A'|route2 == 'A'|route3 == 'A'|route4 == 'A'|route5 == 'A'
-         |route6 == 'A'|route7 == 'A'|route8 == 'A'|route9 == 'A'|route10 == 'A'|route11 == 'A')
+  filter(distinct_station, route1 == 'A' | route2 == 'A' | route3 == 'A' | route4 == 'A' | route5 == 'A' | route6 == 'A' | route7 == 'A' | route8 == 'A' | route9 == 'A' | route10 == 'A' | route11 == 'A')
 ```
 
 There are `r nrow(a_station)` distinct stations serve the A train. 
@@ -121,7 +119,10 @@ pols_month_df =
          month = as.integer(month), 
          day = as.integer(day),
          month = month.abb[month],
-         president = prez_gop + prez_dem) %>%
+         president = case_when(
+           prez_gop == 1 ~ "gop",
+           prez_dem == 1 ~ "dem")
+         ) %>%
   select(-prez_gop, -prez_dem, -day)
 
 snp_df =
